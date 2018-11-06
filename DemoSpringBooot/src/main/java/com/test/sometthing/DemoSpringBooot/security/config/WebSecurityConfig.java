@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -21,11 +22,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		
+		/**
+		 * I'm going to hardcode some usernames and passwords
+		 */
+		
 		/*auth.inMemoryAuthentication()
-			.passwordEncoder(NoOpPasswordEncoder.getInstance())
-			.withUser("soham").password("1234").roles("admin")
+			.withUser("toya").password("123456").roles("user")
 			.and()
-			.withUser("babun").password("4321").roles("user");*/
+			.withUser("sohan").password("abcdef").roles("admin")
+			.and().passwordEncoder(NoOpPasswordEncoder.getInstance());*/
+		
 		auth.jdbcAuthentication()
 			.dataSource(userDataSource)
 			.usersByUsernameQuery("select username, password, enabled"
@@ -34,11 +41,46 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		            + "from authorities where username=?")
 		    .passwordEncoder(NoOpPasswordEncoder.getInstance());
 		
+		
+		
+		
+		
+		
+		/*auth.jdbcAuthentication()
+			.dataSource(userDataSource)
+			.usersByUsernameQuery("select username, password, enabled"
+		            + " from users where username=?")
+		    .authoritiesByUsernameQuery("select username, authority "
+		            + "from authorities where username=?")
+		    .passwordEncoder(NoOpPasswordEncoder.getInstance());*/
+		
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		/*This will make everything inaccessible*/
+		//http.authorizeRequests().anyRequest().denyAll();
+		
+		/* This will open everything */
+//		http.authorizeRequests().anyRequest().permitAll();
+		
+		/**
+		 * The rule base- 
+		 *  I want /user/** and /admin/** to be protected 
+		 *  And only page1-3 to be accessible publicly
+		 */
 		http.authorizeRequests()
+			.antMatchers("/admin/**","/user/**")
+			.authenticated()
+			.and()
+			.formLogin().defaultSuccessUrl("/home")
+			.and()
+			.logout().logoutSuccessUrl("/goodbye")
+			;
+		
+		
+		
+		/*http.authorizeRequests()
 			.antMatchers("/user/**").permitAll()
 			.and()
 			.authorizeRequests()
@@ -51,7 +93,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 			.logout()
 		
-			;
+			;*/
 			
 			
 	}

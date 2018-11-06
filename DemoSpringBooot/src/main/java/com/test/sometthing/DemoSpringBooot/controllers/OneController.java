@@ -22,9 +22,22 @@ public class OneController {
 	public String a1() {
 		return "/admin/a1";
 	}
+	@RequestMapping("/home")
+	public String getHomePage() {
+		return "home";
+	}
 	
 	@RequestMapping("/user/u1")
 	public String u1() {
 		return "/user/u1";
+	}
+	
+	/**
+	 * @return The url where we'll land upon 
+	 * after log out
+	 */
+	@RequestMapping("/goodbye")
+	public String logoutPage() {
+		return "/goodbye";
 	}
 }
