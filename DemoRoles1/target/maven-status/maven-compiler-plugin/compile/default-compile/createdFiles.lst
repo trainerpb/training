@@ -1,0 +1,4 @@
+com\soham\training\springboot\dao\OneController.class
+com\soham\training\springboot\controllers\RolesDemoSpringBoootApplication.class
+com\soham\training\springboot\roledemo1\DaoConfig.class
+com\soham\training\springboot\security\WebSecurityConfig.class
